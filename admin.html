@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Online Bootcamp</title>
+    <meta name="description" content="Admin dashboard for managing bootcamp platform">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- AOS Animation -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <header class="bg-red-600 text-white fixed w-full top-0 z-50 shadow-lg">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-bold flex items-center">
+                    <i class="fas fa-user-shield mr-2"></i>
+                    <span>Admin Panel</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="adminName" class="text-white">Admin</span>
+                    <button onclick="logout()" class="bg-red-700 text-white px-4 py-2 rounded-lg hover:bg-red-800 transition duration-300">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Admin Content -->
+    <main class="pt-20 pb-12">
+        <div class="container mx-auto px-6">
+            <!-- Admin Header -->
+            <div class="mb-8" data-aos="fade-up">
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Admin Dashboard</h1>
+                <p class="text-gray-600">Manage students, courses, and track platform analytics</p>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8" data-aos="fade-up" data-aos-delay="100">
+                <div class="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Total Students</p>
+                            <p class="text-2xl font-bold text-gray-800" id="totalStudents">0</p>
+                        </div>
+                        <div class="bg-blue-100 p-3 rounded-full">
+                            <i class="fas fa-users text-blue-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Active Courses</p>
+                            <p class="text-2xl font-bold text-gray-800" id="activeCourses">6</p>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <i class="fas fa-book text-green-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Pending Assignments</p>
+                            <p class="text-2xl font-bold text-gray-800" id="pendingAssignments">0</p>
+                        </div>
+                        <div class="bg-yellow-100 p-3 rounded-full">
+                            <i class="fas fa-tasks text-yellow-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6 border-l-4 border-purple-500">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Completions</p>
+                            <p class="text-2xl font-bold text-gray-800" id="completions">0</p>
+                        </div>
+                        <div class="bg-purple-100 p-3 rounded-full">
+                            <i class="fas fa-graduation-cap text-purple-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Actions -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- Recent Students -->
+                <div class="bg-white rounded-lg shadow p-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold">Recent Students</h2>
+                        <button onclick="refreshStudents()" class="text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <div id="recentStudents" class="space-y-3">
+                        <!-- Students will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Recent Submissions -->
+                <div class="bg-white rounded-lg shadow p-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold">Recent Submissions</h2>
+                        <button onclick="refreshSubmissions()" class="text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <div id="recentSubmissions" class="space-y-3">
+                        <!-- Submissions will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div class="bg-white rounded-lg shadow p-6" data-aos="fade-up" data-aos-delay="400">
+                    <h2 class="text-xl font-semibold mb-4">Course Enrollments</h2>
+                    <div class="h-64">
+                        <canvas id="enrollmentChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6" data-aos="fade-up" data-aos-delay="500">
+                    <h2 class="text-xl font-semibold mb-4">Student Progress Overview</h2>
+                    <div class="h-64">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Management Tools -->
+            <div class="bg-white rounded-lg shadow p-6" data-aos="fade-up" data-aos-delay="600">
+                <h2 class="text-xl font-semibold mb-6">Management Tools</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <button onclick="manageStudents()" class="bg-blue-600 text-white p-4 rounded-lg hover:bg-blue-700 transition duration-300">
+                        <i class="fas fa-users text-2xl mb-2"></i>
+                        <p>Manage Students</p>
+                    </button>
+                    <button onclick="manageCourses()" class="bg-green-600 text-white p-4 rounded-lg hover:bg-green-700 transition duration-300">
+                        <i class="fas fa-book text-2xl mb-2"></i>
+                        <p>Manage Courses</p>
+                    </button>
+                    <button onclick="manageAssignments()" class="bg-yellow-600 text-white p-4 rounded-lg hover:bg-yellow-700 transition duration-300">
+                        <i class="fas fa-tasks text-2xl mb-2"></i>
+                        <p>Review Assignments</p>
+                    </button>
+                    <button onclick="exportData()" class="bg-purple-600 text-white p-4 rounded-lg hover:bg-purple-700 transition duration-300">
+                        <i class="fas fa-download text-2xl mb-2"></i>
+                        <p>Export Data</p>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Admin Login Modal (shown if not logged in) -->
+    <div id="adminLoginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+            <div class="text-center mb-6">
+                <i class="fas fa-user-shield text-6xl text-red-600 mb-4"></i>
+                <h2 class="text-2xl font-bold text-gray-800">Admin Login</h2>
+                <p class="text-gray-600">Enter your admin credentials</p>
+            </div>
+            
+            <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input 
+                        type="email" 
+                        id="adminEmail" 
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                        placeholder="admin@example.com"
+                    >
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input 
+                        type="password" 
+                        id="adminPassword" 
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                        placeholder="Enter admin password"
+                    >
+                </div>
+                
+                <button 
+                    type="submit" 
+                    class="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition duration-300"
+                >
+                    <i class="fas fa-sign-in-alt mr-2"></i>Login as Admin
+                </button>
+            </form>
+            
+            <div class="mt-4 text-center">
+                <a href="login.html" class="text-blue-600 hover:text-blue-800">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Student Login
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    <div id="messageContainer" class="fixed top-20 right-4 z-50"></div>
+
+    <!-- WhatsApp Floating Button -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <a 
+            href="https://wa.me/212612236660?text=Hello! I need admin support." 
+            target="_blank"
+            class="bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transform hover:scale-110 transition duration-300 group relative"
+        >
+            <i class="fab fa-whatsapp text-2xl"></i>
+            <span class="absolute bottom-full right-0 mb-2 bg-gray-800 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition duration-300 whitespace-nowrap">
+                Admin Support
+            </span>
+        </a>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script>
+        let isAdmin = false;
+        let enrollmentChart = null;
+        let progressChart = null;
+
+        // Initialize AOS
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                duration: 800,
+                once: true,
+                offset: 100
+            });
+            
+            // Check admin auth state
+            checkAdminAuth();
+        });
+
+        // Check admin authentication
+        function checkAdminAuth() {
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    // Check if user has admin role
+                    usersCollection.doc(user.uid).get().then(doc => {
+                        if (doc.exists && doc.data().role === 'admin') {
+                            isAdmin = true;
+                            document.getElementById('adminLoginModal').classList.add('hidden');
+                            document.getElementById('adminName').textContent = user.displayName || 'Admin';
+                            loadAdminData();
+                        } else {
+                            // User is not admin
+                            auth.signOut();
+                            document.getElementById('adminLoginModal').classList.remove('hidden');
+                        }
+                    }).catch(() => {
+                        document.getElementById('adminLoginModal').classList.remove('hidden');
+                    });
+                } else {
+                    document.getElementById('adminLoginModal').classList.remove('hidden');
+                }
+            });
+        }
+
+        // Handle admin login
+        async function handleAdminLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                showMessage('Admin login successful!', 'success');
+            } catch (error) {
+                showMessage('Invalid admin credentials', 'error');
+            }
+        }
+
+        // Load admin dashboard data
+        async function loadAdminData() {
+            try {
+                // Load students
+                const studentsSnapshot = await usersCollection.where('role', '==', 'student').get();
+                document.getElementById('totalStudents').textContent = studentsSnapshot.size;
+                
+                // Load recent students
+                loadRecentStudents(studentsSnapshot);
+                
+                // Load submissions
+                loadRecentSubmissions();
+                
+                // Load stats
+                loadAdminStats();
+                
+                // Create charts
+                createCharts(studentsSnapshot);
+                
+            } catch (error) {
+                console.error('Error loading admin data:', error);
+                showMessage('Error loading dashboard data', 'error');
+            }
+        }
+
+        // Load recent students
+        function loadRecentStudents(studentsSnapshot) {
+            const container = document.getElementById('recentStudents');
+            const students = studentsSnapshot.docs
+                .map(doc => ({ id: doc.id, ...doc.data() }))
+                .sort((a, b) => b.createdAt?.toDate() - a.createdAt?.toDate())
+                .slice(0, 5);
+            
+            if (students.length === 0) {
+                container.innerHTML = '<p class="text-gray-500">No students found</p>';
+                return;
+            }
+            
+            container.innerHTML = students.map(student => `
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div class="flex items-center">
+                        <div class="bg-blue-100 p-2 rounded-full mr-3">
+                            <i class="fas fa-user text-blue-600"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium">${student.name}</p>
+                            <p class="text-sm text-gray-500">${student.email}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm text-gray-500">Enrolled: ${student.enrolledCourses?.length || 0}</p>
+                        <p class="text-sm text-gray-500">Completed: ${student.completedCourses?.length || 0}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load recent submissions
+        async function loadRecentSubmissions() {
+            try {
+                const container = document.getElementById('recentSubmissions');
+                const submissionsSnapshot = await submissionsCollection.orderBy('submittedAt', 'desc').limit(5).get();
+                
+                if (submissionsSnapshot.empty) {
+                    container.innerHTML = '<p class="text-gray-500">No submissions found</p>';
+                    return;
+                }
+                
+                container.innerHTML = submissionsSnapshot.docs.map(doc => {
+                    const submission = doc.data();
+                    return `
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div>
+                                <p class="font-medium">${submission.assignmentTitle}</p>
+                                <p class="text-sm text-gray-500">by ${submission.userName}</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button onclick="reviewSubmission('${doc.id}')" class="text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button onclick="gradeSubmission('${doc.id}')" class="text-green-600 hover:text-green-800">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                document.getElementById('pendingAssignments').textContent = submissionsSnapshot.size;
+            } catch (error) {
+                console.error('Error loading submissions:', error);
+            }
+        }
+
+        // Load admin stats
+        async function loadAdminStats() {
+            try {
+                // Count completions
+                const usersSnapshot = await usersCollection.where('role', '==', 'student').get();
+                let totalCompletions = 0;
+                
+                usersSnapshot.docs.forEach(doc => {
+                    const userData = doc.data();
+                    totalCompletions += userData.completedCourses?.length || 0;
+                });
+                
+                document.getElementById('completions').textContent = totalCompletions;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Create charts
+        function createCharts(studentsSnapshot) {
+            const students = studentsSnapshot.docs.map(doc => doc.data());
+            const courseCounts = {};
+            
+            students.forEach(student => {
+                student.enrolledCourses?.forEach(course => {
+                    courseCounts[course] = (courseCounts[course] || 0) + 1;
+                });
+            });
+            
+            // Enrollment Chart
+            const enrollmentCtx = document.getElementById('enrollmentChart').getContext('2d');
+            enrollmentChart = new Chart(enrollmentCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(courseCounts),
+                    datasets: [{
+                        label: 'Enrollments',
+                        data: Object.values(courseCounts),
+                        backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Progress Chart
+            const progressCtx = document.getElementById('progressChart').getContext('2d');
+            progressChart = new Chart(progressCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Beginner', 'Intermediate', 'Advanced'],
+                    datasets: [{
+                        data: [30, 50, 20], // Example data
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.5)',
+                            'rgba(245, 158, 11, 0.5)',
+                            'rgba(239, 68, 68, 0.5)'
+                        ],
+                        borderColor: [
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(245, 158, 11, 1)',
+                            'rgba(239, 68, 68, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        // Management functions
+        function manageStudents() {
+            showMessage('Opening student management...', 'info');
+            // Implement student management modal or page
+        }
+
+        function manageCourses() {
+            showMessage('Opening course management...', 'info');
+            // Implement course management modal or page
+        }
+
+        function manageAssignments() {
+            showMessage('Opening assignment review...', 'info');
+            // Implement assignment review interface
+        }
+
+        function exportData() {
+            showMessage('Exporting data...', 'info');
+            // Implement data export functionality
+        }
+
+        function reviewSubmission(id) {
+            showMessage('Opening submission review...', 'info');
+            // Implement submission review interface
+        }
+
+        function gradeSubmission(id) {
+            showMessage('Opening grading interface...', 'info');
+            // Implement grading interface
+        }
+
+        function refreshStudents() {
+            loadAdminData();
+            showMessage('Student data refreshed', 'success');
+        }
+
+        function refreshSubmissions() {
+            loadRecentSubmissions();
+            showMessage('Submission data refreshed', 'success');
+        }
+
+        // Logout
+        async function logout() {
+            try {
+                await auth.signOut();
+                showMessage('Logged out successfully', 'success');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            } catch (error) {
+                showMessage('Error logging out', 'error');
+            }
+        }
+
+        // Show message function
+        function showMessage(message, type) {
+            const messageContainer = document.getElementById('messageContainer');
+            const messageDiv = document.createElement('div');
+            
+            const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+            const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
+            
+            messageDiv.className = `${bgColor} text-white px-6 py-4 rounded-lg shadow-lg mb-4 flex items-center transform transition-all duration-300 translate-x-full`;
+            messageDiv.innerHTML = `
+                <i class="fas ${icon} mr-3"></i>
+                <span>${message}</span>
+            `;
+            
+            messageContainer.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.classList.remove('translate-x-full');
+                messageDiv.classList.add('translate-x-0');
+            }, 100);
+            
+            setTimeout(() => {
+                messageDiv.classList.add('translate-x-full');
+                setTimeout(() => {
+                    messageContainer.removeChild(messageDiv);
+                }, 300);
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Courses - Online Bootcamp</title>
+    <meta name="description" content="Explore our comprehensive web development courses">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- AOS Animation -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <header class="bg-blue-600 text-white fixed w-full top-0 z-50 shadow-lg">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-bold flex items-center">
+                    <i class="fas fa-graduation-cap mr-2"></i>
+                    <a href="index.html">Bootcamp</a>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="index.html" class="hover:text-yellow-400 transition duration-300">Home</a>
+                    <a href="courses.html" class="hover:text-yellow-400 transition duration-300">Courses</a>
+                    <a href="dashboard.html" class="hover:text-yellow-400 transition duration-300">Dashboard</a>
+                    <a href="index.html#about" class="hover:text-yellow-400 transition duration-300">About</a>
+                    <a href="index.html#contact" class="hover:text-yellow-400 transition duration-300">Contact</a>
+                    <a href="admin.html" class="hover:text-yellow-400 transition duration-300">
+                        <i class="fas fa-user-shield mr-1"></i>Admin
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="user-info" class="hidden">
+                        <span id="user-name" class="mr-4"></span>
+                        <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300">
+                            Logout
+                        </button>
+                    </div>
+                    <div id="auth-buttons">
+                        <button onclick="showLoginModal()" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-300">
+                            Login
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-12 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4" data-aos="fade-up">Our Courses</h1>
+            <p class="text-xl" data-aos="fade-up" data-aos-delay="100">
+                Choose from our comprehensive selection of web development courses
+            </p>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="py-8 bg-white shadow-sm">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-wrap justify-center gap-4" data-aos="fade-up">
+                <button onclick="filterCourses('all')" class="filter-btn px-6 py-2 rounded-full bg-blue-600 text-white transition duration-300">
+                    All Courses
+                </button>
+                <button onclick="filterCourses('beginner')" class="filter-btn px-6 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 transition duration-300">
+                    Beginner
+                </button>
+                <button onclick="filterCourses('intermediate')" class="filter-btn px-6 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 transition duration-300">
+                    Intermediate
+                </button>
+                <button onclick="filterCourses('advanced')" class="filter-btn px-6 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 transition duration-300">
+                    Advanced
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Grid -->
+    <section class="py-12">
+        <div class="container mx-auto px-6">
+            <div id="coursesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- HTML & CSS Course -->
+                <div class="course-card bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition duration-300" data-level="beginner" data-aos="fade-up">
+                    <div class="h-48 bg-gradient-to-r from-orange-400 to-red-500 flex items-center justify-center">
+                        <i class="fab fa-html5 text-white text-6xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-semibold">HTML & CSS Fundamentals</h3>
+                            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Beginner</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Master the foundation of web development with semantic HTML5 and modern CSS3 including Flexbox and Grid.</p>
+                        
+                        <div class="mb-4">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-clock text-gray-500 mr-2"></i>
+                                <span class="text-sm text-gray-600">Duration: 8 weeks</span>
+                            </div>
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-video text-gray-500 mr-2"></i>
+                                <span class="text-sm text-gray-600">24 video lessons</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-project-diagram text-gray-500 mr-2"></i>
+                                <span class="text-sm text-gray-600">3 mini projects</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="font-semibold mb-2">What you'll learn:</h4>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Semantic HTML5 structure</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Modern CSS3 techniques</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Responsive design with Flexbox</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>CSS Grid layouts</li>
+                            </ul>
+                        </div>
+
+                        <button onclick="viewCourseDetails('html-css')" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+
+                <!-- JavaScript Course -->
+                <div class="course-card bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition duration-300" data-level="intermediate" data-aos="fade-up" data-aos-delay="100">
+                    <div class="h-48 bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center">
+                        <i class="fab fa-js text-white text-6xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-semibold">JavaScript & DOM</h3>
+                            <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">Intermediate</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Dive deep into JavaScript programming and learn to create interactive, dynamic web applications.</p>
+                        
+                        <div class="mb-4">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-clock text-gray-500 mr-2"></i>
+                                <span class="text-sm text-gray-600">Duration: 10 weeks</span>
+                            </div>
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-video text-gray-500 mr-2"></i>
+                                <span class="text-sm text-gray-600">30 video lessons</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-project-diagram text-gray-500 mr-2"></i>
+                                <span class="text-sm text-gray-600">4 mini projects</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="font-semibold mb-2">What you'll learn:</h4>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>JavaScript fundamentals</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>DOM manipulation</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Async programming</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>ES6+ features</li>
+                            </ul>
+                        </div>
+
+                        <button onclick="viewCourseDetails('javascript')" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+
+                <!-- React Course -->
+                <div class="course-card bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition duration-300" data-level="advanced" data-aos="fade-up" data-aos-delay="200">
+                    <div class="h-48 bg-gradient-to-r from-cyan-400 to-blue-500 flex items-center justify-center">
+                        <i class="fab fa-react text-white text-6xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-semibold">React Development</h3>
+                            <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">Advanced</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Build modern single-page applications with React, Redux, and the React ecosystem.</p>
+                        
+                        <div class="mb-4">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-clock text-gray-500 mr-2"></i>
+                                <span class="text-sm text-gray-600">Duration: 12 weeks</span>
+                            </div>
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-video text-gray-500 mr-2"></i>
+                                <span class="text-sm text-gray-600">36 video lessons</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-project-diagram text-gray-500 mr-2"></i>
+                                <span class="text-sm text-gray-600">5 mini projects</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="font-semibold mb-2">What you'll learn:</h4>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>React components</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>State management</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>React Router</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Redux & Redux Toolkit</li>
+                            </ul>
+                        </div>
+
+                        <button onclick="viewCourseDetails('react')" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Node.js Course -->
+                <div class="course-card bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition duration-300" data-level="advanced" data-aos="fade-up" data-aos-delay="300">
+                    <div class="h-48 bg-gradient-to-r from-green-400 to-emerald-500 flex items-center justify-center">
+                        <i class="fab fa-node text-white text-6xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-semibold">Node.js & Express</h3>
+                            <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">Advanced</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Build scalable backend applications with Node.js, Express, and MongoDB database.</p>
+                        
+                        <div class="mb-4">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-clock text-gray-500 mr-2"></i>
+                                <span class="text-sm text-gray-600">Duration: 10 weeks</span>
+                            </div>
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-video text-gray-500 mr-2"></i>
+                                <span class="text-sm text-gray-600">30 video lessons</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-project-diagram text-gray-500 mr-2"></i>
+                                <span class="text-sm text-gray-600">4 mini projects</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="font-semibold mb-2">What you'll learn:</h4>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Node.js fundamentals</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Express.js framework</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>RESTful APIs</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>MongoDB integration</li>
+                            </ul>
+                        </div>
+
+                        <button onclick="viewCourseDetails('nodejs')" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Vue.js Course -->
+                <div class="course-card bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition duration-300" data-level="intermediate" data-aos="fade-up" data-aos-delay="400">
+                    <div class="h-48 bg-gradient-to-r from-teal-400 to-green-500 flex items-center justify-center">
+                        <i class="fab fa-vuejs text-white text-6xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-semibold">Vue.js Development</h3>
+                            <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">Intermediate</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Learn Vue.js 3 and build progressive web applications with this intuitive framework.</p>
+                        
+                        <div class="mb-4">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-clock text-gray-500 mr-2"></i>
+                                <span class="text-sm text-gray-600">Duration: 8 weeks</span>
+                            </div>
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-video text-gray-500 mr-2"></i>
+                                <span class="text-sm text-gray-600">24 video lessons</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-project-diagram text-gray-500 mr-2"></i>
+                                <span class="text-sm text-gray-600">3 mini projects</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="font-semibold mb-2">What you'll learn:</h4>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Vue.js 3 Composition API</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Vue Router</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Pinia state management</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Vue ecosystem</li>
+                            </ul>
+                        </div>
+
+                        <button onclick="viewCourseDetails('vue')" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Full Stack Course -->
+                <div class="course-card bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition duration-300" data-level="advanced" data-aos="fade-up" data-aos-delay="500">
+                    <div class="h-48 bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center">
+                        <i class="fas fa-layer-group text-white text-6xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-semibold">Full Stack Mastery</h3>
+                            <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">Advanced</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Become a full stack developer with our comprehensive program covering both frontend and backend.</p>
+                        
+                        <div class="mb-4">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-clock text-gray-500 mr-2"></i>
+                                <span class="text-sm text-gray-600">Duration: 24 weeks</span>
+                            </div>
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-video text-gray-500 mr-2"></i>
+                                <span class="text-sm text-gray-600">72 video lessons</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-project-diagram text-gray-500 mr-2"></i>
+                                <span class="text-sm text-gray-600">8 mini projects</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="font-semibold mb-2">What you'll learn:</h4>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Frontend frameworks</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Backend development</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Database design</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Deployment & DevOps</li>
+                            </ul>
+                        </div>
+
+                        <button onclick="viewCourseDetails('fullstack')" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Course Details Modal -->
+    <div id="courseModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 max-w-4xl w-full mx-4 max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 id="modalTitle" class="text-2xl font-bold"></h2>
+                <button onclick="closeCourseModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <!-- Auth Modal (from main page) -->
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+            <h2 class="text-2xl font-bold mb-6">Login</h2>
+            <form onsubmit="handleLogin(event)">
+                <input type="email" id="loginEmail" placeholder="Email" class="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" required>
+                <input type="password" id="loginPassword" placeholder="Password" class="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" required>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                    Login
+                </button>
+            </form>
+            <p class="mt-4 text-center">
+                Don't have an account? 
+                <button onclick="window.location.href='index.html#signup'" class="text-blue-600 hover:underline">Sign up</button>
+            </p>
+            <button onclick="closeModal('loginModal')" class="mt-4 text-gray-500 hover:text-gray-700 text-center w-full">
+                Cancel
+            </button>
+        </div>
+    </div>
+
+    <!-- WhatsApp Floating Button -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <a 
+            href="https://wa.me/212612236660?text=Hello! I need help choosing a course." 
+            target="_blank"
+            class="bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transform hover:scale-110 transition duration-300 group relative"
+        >
+            <i class="fab fa-whatsapp text-2xl"></i>
+            <span class="absolute bottom-full right-0 mb-2 bg-gray-800 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition duration-300 whitespace-nowrap">
+                Need course advice?
+            </span>
+        </a>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="messageContainer" class="fixed top-20 right-4 z-50"></div>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/courses.js"></script>
+</body>
+</html>

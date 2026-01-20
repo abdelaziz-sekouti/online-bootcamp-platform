@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Online Bootcamp</title>
+    <meta name="description" content="Track your learning progress and access your courses">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- AOS Animation -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Chart.js for progress charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <header class="bg-blue-600 text-white fixed w-full top-0 z-50 shadow-lg">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-bold flex items-center">
+                    <i class="fas fa-graduation-cap mr-2"></i>
+                    <a href="index.html">Bootcamp</a>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="index.html" class="hover:text-yellow-400 transition duration-300">Home</a>
+                    <a href="courses.html" class="hover:text-yellow-400 transition duration-300">Courses</a>
+                    <a href="dashboard.html" class="text-yellow-400 font-semibold">Dashboard</a>
+                    <a href="index.html#about" class="hover:text-yellow-400 transition duration-300">About</a>
+                    <a href="index.html#contact" class="hover:text-yellow-400 transition duration-300">Contact</a>
+                    <a href="admin.html" class="hover:text-yellow-400 transition duration-300">
+                        <i class="fas fa-user-shield mr-1"></i>Admin
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="user-info">
+                        <span id="user-name" class="mr-4"></span>
+                        <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300">
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Dashboard Content -->
+    <main class="pt-20 pb-12">
+        <div class="container mx-auto px-6">
+            <!-- Welcome Section -->
+            <section class="mb-8" data-aos="fade-up">
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+                    Welcome back, <span id="welcome-name" class="text-blue-600"></span>!
+                </h1>
+                <p class="text-gray-600">Continue your learning journey and track your progress</p>
+            </section>
+
+            <!-- Stats Overview -->
+            <section class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8" data-aos="fade-up" data-aos-delay="100">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Courses Enrolled</p>
+                            <p class="text-2xl font-bold text-gray-800" id="courses-enrolled">0</p>
+                        </div>
+                        <div class="bg-blue-100 p-3 rounded-full">
+                            <i class="fas fa-book text-blue-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Completed</p>
+                            <p class="text-2xl font-bold text-gray-800" id="courses-completed">0</p>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <i class="fas fa-check-circle text-green-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">In Progress</p>
+                            <p class="text-2xl font-bold text-gray-800" id="courses-in-progress">0</p>
+                        </div>
+                        <div class="bg-yellow-100 p-3 rounded-full">
+                            <i class="fas fa-spinner text-yellow-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Total Hours</p>
+                            <p class="text-2xl font-bold text-gray-800" id="total-hours">0</p>
+                        </div>
+                        <div class="bg-purple-100 p-3 rounded-full">
+                            <i class="fas fa-clock text-purple-600"></i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Progress Chart -->
+            <section class="bg-white rounded-lg shadow p-6 mb-8" data-aos="fade-up" data-aos-delay="200">
+                <h2 class="text-xl font-semibold mb-4">Overall Progress</h2>
+                <div class="h-64">
+                    <canvas id="progressChart"></canvas>
+                </div>
+            </section>
+
+            <!-- Enrolled Courses -->
+            <section class="mb-8" data-aos="fade-up" data-aos-delay="300">
+                <h2 class="text-2xl font-semibold mb-6">My Courses</h2>
+                <div id="enrolled-courses" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Courses will be dynamically added here -->
+                </div>
+            </section>
+
+            <!-- Recent Activity -->
+            <section class="bg-white rounded-lg shadow p-6 mb-8" data-aos="fade-up" data-aos-delay="400">
+                <h2 class="text-xl font-semibold mb-4">Recent Activity</h2>
+                <div id="recent-activity" class="space-y-4">
+                    <!-- Activity will be dynamically added here -->
+                </div>
+            </section>
+
+            <!-- Mini Projects Section -->
+            <section class="mb-8" data-aos="fade-up" data-aos-delay="500">
+                <h2 class="text-2xl font-semibold mb-6">Mini Projects</h2>
+                <div id="mini-projects" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Projects will be dynamically added here -->
+                </div>
+            </section>
+
+            <!-- Assignments Section -->
+            <section class="mb-8" data-aos="fade-up" data-aos-delay="600">
+                <h2 class="text-2xl font-semibold mb-6">Pending Assignments</h2>
+                <div id="assignments" class="space-y-4">
+                    <!-- Assignments will be dynamically added here -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Project Modal -->
+    <div id="projectModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 max-w-2xl w-full mx-4 max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 id="projectTitle" class="text-2xl font-bold"></h2>
+                <button onclick="closeProjectModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            <div id="projectContent"></div>
+        </div>
+    </div>
+
+    <!-- Assignment Submission Modal -->
+    <div id="assignmentModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 max-w-2xl w-full mx-4 max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 id="assignmentTitle" class="text-2xl font-bold"></h2>
+                <button onclick="closeAssignmentModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            <div id="assignmentContent"></div>
+        </div>
+    </div>
+
+    <!-- WhatsApp Floating Button -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <a 
+            href="https://wa.me/212612236660?text=Hello! I need help with my course progress." 
+            target="_blank"
+            class="bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transform hover:scale-110 transition duration-300 group relative"
+        >
+            <i class="fab fa-whatsapp text-2xl"></i>
+            <span class="absolute bottom-full right-0 mb-2 bg-gray-800 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition duration-300 whitespace-nowrap">
+                Need help with studies?
+            </span>
+        </a>
+    </div>
+
+    <!-- Messages -->
+    <div id="messageContainer" class="fixed top-20 right-4 z-50"></div>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

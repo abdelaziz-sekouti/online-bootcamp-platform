@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Online Bootcamp</title>
+    <meta name="description" content="Create your account and start learning">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- AOS Animation -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 bg-gradient-to-br from-green-500 via-blue-500 to-purple-500 opacity-10"></div>
+    <div class="fixed inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.1"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+    
+    <!-- Navigation -->
+    <header class="fixed top-0 left-0 right-0 bg-white shadow-lg z-40">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-bold flex items-center">
+                    <i class="fas fa-graduation-cap mr-2 text-green-600"></i>
+                    <a href="index.html" class="text-gray-800 hover:text-green-600 transition duration-300">Bootcamp</a>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="index.html" class="text-gray-600 hover:text-green-600 transition duration-300">
+                        <i class="fas fa-home mr-2"></i>Home
+                    </a>
+                    <a href="courses.html" class="text-gray-600 hover:text-green-600 transition duration-300">
+                        <i class="fas fa-book mr-2"></i>Courses
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="relative z-10 w-full max-w-md mx-auto p-6">
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden" data-aos="fade-up">
+            <!-- Register Header -->
+            <div class="bg-gradient-to-r from-green-600 to-blue-600 p-8 text-white text-center">
+                <i class="fas fa-user-plus text-6xl mb-4"></i>
+                <h1 class="text-3xl font-bold mb-2">Join Our Bootcamp!</h1>
+                <p class="text-green-100">Start your web development journey today</p>
+            </div>
+            
+            <!-- Register Form -->
+            <div class="p-8">
+                <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-user mr-2"></i>Full Name
+                        </label>
+                        <input 
+                            type="text" 
+                            id="registerName" 
+                            required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                            placeholder="John Doe"
+                        >
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-envelope mr-2"></i>Email Address
+                        </label>
+                        <input 
+                            type="email" 
+                            id="registerEmail" 
+                            required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                            placeholder="your@email.com"
+                        >
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-phone mr-2"></i>Phone Number (Optional)
+                        </label>
+                        <input 
+                            type="tel" 
+                            id="registerPhone"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                            placeholder="+212 6XX-XXXXXX"
+                        >
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-lock mr-2"></i>Password
+                        </label>
+                        <div class="relative">
+                            <input 
+                                type="password" 
+                                id="registerPassword" 
+                                required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                                placeholder="Create a strong password"
+                            >
+                            <button 
+                                type="button" 
+                                onclick="togglePassword('registerPassword')"
+                                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                            >
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="mt-2">
+                            <div class="flex items-center space-x-2">
+                                <div id="passwordStrength" class="flex-1 h-2 bg-gray-200 rounded-full">
+                                    <div id="strengthBar" class="h-full rounded-full transition duration-300"></div>
+                                </div>
+                                <span id="strengthText" class="text-xs text-gray-500">Strength</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-lock mr-2"></i>Confirm Password
+                        </label>
+                        <div class="relative">
+                            <input 
+                                type="password" 
+                                id="confirmPassword" 
+                                required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                                placeholder="Confirm your password"
+                            >
+                            <button 
+                                type="button" 
+                                onclick="togglePassword('confirmPassword')"
+                                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                            >
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div id="passwordMatch" class="mt-1 text-sm"></div>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <label class="flex items-center">
+                            <input type="checkbox" required class="mr-2 rounded text-green-600">
+                            <span class="text-sm text-gray-600">
+                                I agree to the <a href="#" class="text-green-600 hover:text-green-800">Terms of Service</a> and <a href="#" class="text-green-600 hover:text-green-800">Privacy Policy</a>
+                            </span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="mr-2 rounded text-green-600">
+                            <span class="text-sm text-gray-600">
+                                Send me course updates and special offers
+                            </span>
+                        </label>
+                    </div>
+                    
+                    <button 
+                        type="submit" 
+                        class="w-full bg-gradient-to-r from-green-600 to-blue-600 text-white py-3 rounded-lg font-semibold hover:from-green-700 hover:to-blue-700 transform hover:scale-105 transition duration-200 shadow-lg"
+                    >
+                        <i class="fas fa-user-plus mr-2"></i>Create Account
+                    </button>
+                </form>
+                
+                <!-- Social Registration -->
+                <div class="mt-6">
+                    <div class="relative">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-300"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-2 bg-white text-gray-500">Or sign up with</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 grid grid-cols-2 gap-3">
+                        <button 
+                            onclick="signInWithGoogle()" 
+                            class="flex justify-center items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition duration-200"
+                        >
+                            <i class="fab fa-google text-red-500 mr-2"></i>
+                            Google
+                        </button>
+                        <button 
+                            class="flex justify-center items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition duration-200"
+                        >
+                            <i class="fab fa-github mr-2"></i>
+                            GitHub
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Login Link -->
+                <div class="mt-8 text-center">
+                    <p class="text-gray-600">
+                        Already have an account? 
+                        <a href="login.html" class="text-green-600 hover:text-green-800 font-semibold">
+                            Login here
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Benefits Section -->
+        <div class="mt-8 bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-lg" data-aos="fade-up" data-aos-delay="200">
+            <h3 class="font-semibold text-gray-700 mb-4 text-center">Why Join Our Bootcamp?</h3>
+            <div class="space-y-3">
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                    <span class="text-sm text-gray-600">Access to 6 comprehensive courses</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                    <span class="text-sm text-gray-600">Hands-on mini projects</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                    <span class="text-sm text-gray-600">Progress tracking & certificates</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                    <span class="text-sm text-gray-600">Expert instructor support</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- WhatsApp Floating Button -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <a 
+            href="https://wa.me/212612236660?text=Hello! I want to register for the bootcamp." 
+            target="_blank"
+            class="bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transform hover:scale-110 transition duration-300 group relative"
+        >
+            <i class="fab fa-whatsapp text-2xl"></i>
+            <span class="absolute bottom-full right-0 mb-2 bg-gray-800 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition duration-300 whitespace-nowrap">
+                Need help registering?
+            </span>
+        </a>
+    </div>
+
+    <!-- Messages Container -->
+    <div id="messageContainer" class="fixed top-20 right-4 z-50"></div>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Initialize AOS
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                duration: 800,
+                once: true,
+                offset: 100
+            });
+
+            // Password strength checker
+            document.getElementById('registerPassword').addEventListener('input', checkPasswordStrength);
+            document.getElementById('confirmPassword').addEventListener('input', checkPasswordMatch);
+        });
+
+        // Toggle password visibility
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = event.currentTarget.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Password strength checker
+        function checkPasswordStrength() {
+            const password = document.getElementById('registerPassword').value;
+            const strengthBar = document.getElementById('strengthBar');
+            const strengthText = document.getElementById('strengthText');
+            
+            let strength = 0;
+            let color = '';
+            let text = '';
+            
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]+/)) strength++;
+            if (password.match(/[A-Z]+/)) strength++;
+            if (password.match(/[0-9]+/)) strength++;
+            if (password.match(/[$@#&!]+/)) strength++;
+            
+            switch (strength) {
+                case 0:
+                case 1:
+                    color = 'bg-red-500';
+                    text = 'Weak';
+                    break;
+                case 2:
+                case 3:
+                    color = 'bg-yellow-500';
+                    text = 'Medium';
+                    break;
+                case 4:
+                case 5:
+                    color = 'bg-green-500';
+                    text = 'Strong';
+                    break;
+            }
+            
+            strengthBar.className = `h-full rounded-full transition duration-300 ${color}`;
+            strengthBar.style.width = `${(strength / 5) * 100}%`;
+            strengthText.textContent = text;
+        }
+
+        // Check password match
+        function checkPasswordMatch() {
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const matchDiv = document.getElementById('passwordMatch');
+            
+            if (confirmPassword.length === 0) {
+                matchDiv.innerHTML = '';
+                return;
+            }
+            
+            if (password === confirmPassword) {
+                matchDiv.innerHTML = '<i class="fas fa-check-circle text-green-500 mr-1"></i><span class="text-green-500">Passwords match</span>';
+            } else {
+                matchDiv.innerHTML = '<i class="fas fa-times-circle text-red-500 mr-1"></i><span class="text-red-500">Passwords do not match</span>';
+            }
+        }
+
+        // Enhanced registration handler
+        async function handleRegister(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const phone = document.getElementById('registerPhone').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Validation
+            if (password !== confirmPassword) {
+                showMessage('Passwords do not match!', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showMessage('Password should be at least 6 characters!', 'error');
+                return;
+            }
+            
+            // Show loading state
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Creating Account...';
+            submitBtn.disabled = true;
+            
+            try {
+                // Create user account
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                await userCredential.user.updateProfile({ displayName: name });
+                
+                // Create user document in Firestore
+                await usersCollection.doc(userCredential.user.uid).set({
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    enrolledCourses: [],
+                    completedCourses: [],
+                    progress: {},
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    role: 'student'
+                });
+                
+                showMessage('Account created successfully! Redirecting...', 'success');
+                
+                // Send welcome email (you'd implement this with Firebase Cloud Functions)
+                console.log('Welcome email would be sent to:', email);
+                
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 2000);
+                
+            } catch (error) {
+                let errorMessage = error.message;
+                
+                // Friendly error messages
+                if (error.code === 'auth/email-already-in-use') {
+                    errorMessage = 'An account with this email already exists. Please login.';
+                } else if (error.code === 'auth/weak-password') {
+                    errorMessage = 'Password is too weak. Please choose a stronger password.';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'Please enter a valid email address.';
+                }
+                
+                showMessage(errorMessage, 'error');
+            } finally {
+                // Restore button state
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Google sign-in
+        async function signInWithGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            try {
+                const result = await auth.signInWithPopup(provider);
+                
+                // Create user document if it doesn't exist
+                const userDoc = await usersCollection.doc(result.user.uid).get();
+                if (!userDoc.exists) {
+                    await usersCollection.doc(result.user.uid).set({
+                        name: result.user.displayName,
+                        email: result.user.email,
+                        phone: result.user.phoneNumber || '',
+                        enrolledCourses: [],
+                        completedCourses: [],
+                        progress: {},
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        role: 'student'
+                    });
+                }
+                
+                showMessage('Google registration successful!', 'success');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            } catch (error) {
+                showMessage('Google registration failed: ' + error.message, 'error');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Bootcamp - Transform Your Career</title>
+    <meta name="description" content="Learn web development, JavaScript, and build real projects in our comprehensive online bootcamp">
+    <meta name="author" content="Sekouti Abdelaziz">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- AOS Animation -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <header class="bg-blue-600 text-white fixed w-full top-0 z-50 shadow-lg">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-bold flex items-center">
+                    <i class="fas fa-graduation-cap mr-2"></i>
+                    Bootcamp
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#home" class="hover:text-yellow-400 transition duration-300">Home</a>
+                    <a href="courses.html" class="hover:text-yellow-400 transition duration-300">Courses</a>
+                    <a href="#about" class="hover:text-yellow-400 transition duration-300">About</a>
+                    <a href="#testimonials" class="hover:text-yellow-400 transition duration-300">Testimonials</a>
+                    <a href="#contact" class="hover:text-yellow-400 transition duration-300">Contact</a>
+                    <a href="admin.html" class="hover:text-yellow-400 transition duration-300">
+                        <i class="fas fa-user-shield mr-1"></i>Admin
+                    </a>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="login.html" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-300">
+                        Login
+                    </a>
+                    <a href="register.html" class="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition duration-300">
+                        Sign Up
+                    </a>
+                </div>
+                <button class="md:hidden" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="hidden md:hidden mt-4">
+                <a href="#home" class="block py-2 hover:text-yellow-400">Home</a>
+                <a href="courses.html" class="block py-2 hover:text-yellow-400">Courses</a>
+                <a href="#about" class="block py-2 hover:text-yellow-400">About</a>
+                <a href="#testimonials" class="block py-2 hover:text-yellow-400">Testimonials</a>
+                <a href="#contact" class="block py-2 hover:text-yellow-400">Contact</a>
+                <a href="admin.html" class="block py-2 hover:text-yellow-400">
+                    <i class="fas fa-user-shield mr-1"></i>Admin
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen bg-cover bg-center relative flex items-center justify-center text-white" 
+             style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80');">
+        <div class="container mx-auto px-6 text-center" data-aos="fade-up">
+            <h1 class="text-5xl md:text-6xl font-bold mb-6">Transform Your Career with Our Bootcamp</h1>
+            <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+                Learn Web Development, JavaScript, and Build Real Projects!
+            </p>
+            <div class="space-x-4">
+                <a href="register.html" class="bg-yellow-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-yellow-600 transform hover:scale-105 transition duration-300">
+                    Join Now
+                </a>
+                <a href="courses.html" class="bg-transparent border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white hover:text-blue-600 transform hover:scale-105 transition duration-300">
+                    View Courses
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-16" data-aos="fade-up">Why Choose Our Bootcamp?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center" data-aos="fade-up" data-aos-delay="100">
+                    <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-code text-blue-600 text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Hands-on Learning</h3>
+                    <p class="text-gray-600">Build real projects while learning practical skills that employers value</p>
+                </div>
+                <div class="text-center" data-aos="fade-up" data-aos-delay="200">
+                    <div class="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-users text-green-600 text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Expert Instructors</h3>
+                    <p class="text-gray-600">Learn from industry professionals with years of experience</p>
+                </div>
+                <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+                    <div class="bg-purple-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-certificate text-purple-600 text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Certificate of Completion</h3>
+                    <p class="text-gray-600">Receive a recognized certificate to boost your career prospects</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section id="courses" class="py-20 bg-gray-100">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-16" data-aos="fade-up">Our Popular Courses</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition duration-300" data-aos="fade-up" data-aos-delay="100">
+                    <div class="h-48 bg-gradient-to-r from-orange-400 to-red-500 flex items-center justify-center">
+                        <i class="fab fa-html5 text-white text-6xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">HTML & CSS Fundamentals</h3>
+                        <p class="text-gray-600 mb-4">Master the foundation of web development with semantic HTML5 and modern CSS</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-sm text-gray-500"><i class="fas fa-clock mr-1"></i> 8 weeks</span>
+                            <span class="text-sm text-gray-500"><i class="fas fa-signal mr-1"></i> Beginner</span>
+                        </div>
+                        <button onclick="enrollCourse('HTML & CSS Fundamentals')" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                            Enroll Now
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition duration-300" data-aos="fade-up" data-aos-delay="200">
+                    <div class="h-48 bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center">
+                        <i class="fab fa-js text-white text-6xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">JavaScript & DOM</h3>
+                        <p class="text-gray-600 mb-4">Dive deep into JavaScript and learn to create interactive web applications</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-sm text-gray-500"><i class="fas fa-clock mr-1"></i> 10 weeks</span>
+                            <span class="text-sm text-gray-500"><i class="fas fa-signal mr-1"></i> Intermediate</span>
+                        </div>
+                        <button onclick="enrollCourse('JavaScript & DOM')" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                            Enroll Now
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition duration-300" data-aos="fade-up" data-aos-delay="300">
+                    <div class="h-48 bg-gradient-to-r from-green-400 to-blue-500 flex items-center justify-center">
+                        <i class="fab fa-react text-white text-6xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">React Development</h3>
+                        <p class="text-gray-600 mb-4">Build modern single-page applications with React and its ecosystem</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-sm text-gray-500"><i class="fas fa-clock mr-1"></i> 12 weeks</span>
+                            <span class="text-sm text-gray-500"><i class="fas fa-signal mr-1"></i> Advanced</span>
+                        </div>
+                        <button onclick="enrollCourse('React Development')" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                            Enroll Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-16" data-aos="fade-up">What Our Students Say</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-gray-100 p-6 rounded-lg" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex items-center mb-4">
+                        <img src="https://picsum.photos/seed/student1/50/50" alt="Student" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-semibold">Sarah Johnson</h4>
+                            <div class="text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">"The bootcamp completely transformed my career. I went from zero coding knowledge to landing a job as a frontend developer!"</p>
+                </div>
+
+                <div class="bg-gray-100 p-6 rounded-lg" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex items-center mb-4">
+                        <img src="https://picsum.photos/seed/student2/50/50" alt="Student" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-semibold">Mike Chen</h4>
+                            <div class="text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">"The hands-on projects and expert instructors made learning web development enjoyable and practical."</p>
+                </div>
+
+                <div class="bg-gray-100 p-6 rounded-lg" data-aos="fade-up" data-aos-delay="300">
+                    <div class="flex items-center mb-4">
+                        <img src="https://picsum.photos/seed/student3/50/50" alt="Student" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-semibold">Emily Davis</h4>
+                            <div class="text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">"Amazing experience! The curriculum is well-structured and the community support is incredible."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-gray-100">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-16" data-aos="fade-up">Get In Touch</h2>
+            <div class="max-w-4xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div data-aos="fade-right">
+                        <h3 class="text-2xl font-semibold mb-4">Contact Information</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-user text-blue-600 text-xl mr-4"></i>
+                                <div>
+                                    <p class="font-semibold">Instructor</p>
+                                    <p class="text-gray-600">Sekouti Abdelaziz</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-phone text-blue-600 text-xl mr-4"></i>
+                                <div>
+                                    <p class="font-semibold">Phone</p>
+                                    <p class="text-gray-600">+212 612-236660</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-envelope text-blue-600 text-xl mr-4"></i>
+                                <div>
+                                    <p class="font-semibold">Email</p>
+                                    <p class="text-gray-600">sekoutiabdelaziz0@gmail.com</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div data-aos="fade-left">
+                        <h3 class="text-2xl font-semibold mb-4">Send us a Message</h3>
+                        <form onsubmit="handleContactForm(event)" class="space-y-4">
+                            <input type="text" placeholder="Your Name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" required>
+                            <input type="email" placeholder="Your Email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" required>
+                            <textarea placeholder="Your Message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" required></textarea>
+                            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                                Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Media Section -->
+    <section class="py-12 bg-blue-600 text-white">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl font-bold mb-6">Connect With Us</h2>
+            <div class="flex justify-center space-x-6">
+                <a href="https://facebook.com" target="_blank" class="text-3xl hover:text-yellow-400 transform hover:scale-110 transition duration-300" data-aos="fade-up" data-aos-delay="100">
+                    <i class="fab fa-facebook"></i>
+                </a>
+                <a href="https://twitter.com" target="_blank" class="text-3xl hover:text-yellow-400 transform hover:scale-110 transition duration-300" data-aos="fade-up" data-aos-delay="200">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://instagram.com" target="_blank" class="text-3xl hover:text-yellow-400 transform hover:scale-110 transition duration-300" data-aos="fade-up" data-aos-delay="300">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://linkedin.com" target="_blank" class="text-3xl hover:text-yellow-400 transform hover:scale-110 transition duration-300" data-aos="fade-up" data-aos-delay="400">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="https://github.com" target="_blank" class="text-3xl hover:text-yellow-400 transform hover:scale-110 transition duration-300" data-aos="fade-up" data-aos-delay="500">
+                    <i class="fab fa-github"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- WhatsApp Floating Button -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <a 
+            href="https://wa.me/212612236660?text=Hello! I'm interested in your bootcamp programs." 
+            target="_blank"
+            class="bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transform hover:scale-110 transition duration-300 group relative"
+        >
+            <i class="fab fa-whatsapp text-2xl"></i>
+            <span class="absolute bottom-full right-0 mb-2 bg-gray-800 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition duration-300 whitespace-nowrap">
+                Chat with us on WhatsApp!
+            </span>
+        </a>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2024 Online Bootcamp. All rights reserved. | Designed by Sekouti Abdelaziz</p>
+        </div>
+    </footer>
+
+    <!-- Auth Modals -->
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+            <h2 class="text-2xl font-bold mb-6">Login</h2>
+            <form onsubmit="handleLogin(event)">
+                <input type="email" id="loginEmail" placeholder="Email" class="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" required>
+                <input type="password" id="loginPassword" placeholder="Password" class="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" required>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                    Login
+                </button>
+            </form>
+            <p class="mt-4 text-center">
+                Don't have an account? 
+                <button onclick="switchToSignup()" class="text-blue-600 hover:underline">Sign up</button>
+            </p>
+            <button onclick="closeModal('loginModal')" class="mt-4 text-gray-500 hover:text-gray-700 text-center w-full">
+                Cancel
+            </button>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+            <h2 class="text-2xl font-bold mb-6">Sign Up</h2>
+            <form onsubmit="handleSignup(event)">
+                <input type="text" id="signupName" placeholder="Full Name" class="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" required>
+                <input type="email" id="signupEmail" placeholder="Email" class="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" required>
+                <input type="password" id="signupPassword" placeholder="Password" class="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" required>
+                <input type="password" id="signupConfirmPassword" placeholder="Confirm Password" class="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" required>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                    Sign Up
+                </button>
+            </form>
+            <p class="mt-4 text-center">
+                Already have an account? 
+                <button onclick="switchToLogin()" class="text-blue-600 hover:underline">Login</button>
+            </p>
+            <button onclick="closeModal('signupModal')" class="mt-4 text-gray-500 hover:text-gray-700 text-center w-full">
+                Cancel
+            </button>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="messageContainer" class="fixed top-20 right-4 z-50"></div>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
