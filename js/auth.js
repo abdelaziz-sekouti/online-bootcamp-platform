@@ -5,7 +5,7 @@ let currentUser = null;
 auth.onAuthStateChanged(user => {
     currentUser = user;
     updateUI(user);
-    
+
     if (user) {
         // User is signed in
         loadUserData(user);
@@ -19,65 +19,74 @@ auth.onAuthStateChanged(user => {
 
 // Update UI based on authentication state
 function updateUI(user) {
-    const user-info = document.getElementById('user-info');
-    const auth-buttons = document.getElementById('auth-buttons');
-    const user-name = document.getElementById('user-name');
-    const welcome-name = document.getElementById('welcome-name');
-    
+    const userInfo = document.getElementById('user-info');
+    const authButtons = document.getElementById('auth-buttons');
+    const userName = document.getElementById('user-name');
+    const welcomeName = document.getElementById('welcome-name');
+
     if (user) {
         const displayName = user.displayName || user.email.split('@')[0];
-        
-        if (user-info) user-info.classList.remove('hidden');
-        if (auth-buttons) auth-buttons.classList.add('hidden');
-        if (user-name) user-name.textContent = displayName;
-        if (welcome-name) welcome-name.textContent = displayName;
+
+        if (userInfo) userInfo.classList.remove('hidden');
+        if (authButtons) authButtons.classList.add('hidden');
+        if (userName) userName.textContent = displayName;
+        if (welcomeName) welcomeName.textContent = displayName;
     } else {
-        if (user-info) user-info.classList.add('hidden');
-        if (auth-buttons) auth-buttons.classList.remove('hidden');
+        if (userInfo) userInfo.classList.add('hidden');
+        if (authButtons) authButtons.classList.remove('hidden');
     }
 }
 
 // Show login modal
 function showLoginModal() {
-    document.getElementById('loginModal').classList.remove('hidden');
-    document.getElementById('signupModal').classList.add('hidden');
+    const loginModal = document.getElementById('loginModal');
+    const signupModal = document.getElementById('signupModal');
+    if (loginModal) loginModal.classList.remove('hidden');
+    if (signupModal) signupModal.classList.add('hidden');
 }
 
 // Show signup modal
 function showSignupModal() {
-    document.getElementById('signupModal').classList.remove('hidden');
-    document.getElementById('loginModal').classList.add('hidden');
+    const loginModal = document.getElementById('loginModal');
+    const signupModal = document.getElementById('signupModal');
+    if (signupModal) signupModal.classList.remove('hidden');
+    if (loginModal) loginModal.classList.add('hidden');
 }
 
 // Switch to signup
 function switchToSignup() {
-    document.getElementById('loginModal').classList.add('hidden');
-    document.getElementById('signupModal').classList.remove('hidden');
+    const loginModal = document.getElementById('loginModal');
+    const signupModal = document.getElementById('signupModal');
+    if (loginModal) loginModal.classList.add('hidden');
+    if (signupModal) signupModal.classList.remove('hidden');
 }
 
 // Switch to login
 function switchToLogin() {
-    document.getElementById('signupModal').classList.add('hidden');
-    document.getElementById('loginModal').classList.remove('hidden');
+    const loginModal = document.getElementById('loginModal');
+    const signupModal = document.getElementById('signupModal');
+    if (signupModal) signupModal.classList.add('hidden');
+    if (loginModal) loginModal.classList.remove('hidden');
 }
 
 // Close modal
 function closeModal(modalId) {
-    document.getElementById(modalId).classList.add('hidden');
+    const modal = document.getElementById(modalId);
+    if (modal) modal.classList.add('hidden');
 }
 
 // Handle login
 async function handleLogin(event) {
     event.preventDefault();
-    
+
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
-    
+
     try {
         await auth.signInWithEmailAndPassword(email, password);
         closeModal('loginModal');
         showMessage('Login successful!', 'success');
-        
+
         // Redirect to dashboard after successful login
         setTimeout(() => {
             window.location.href = 'dashboard.html';
@@ -90,26 +99,26 @@ async function handleLogin(event) {
 // Handle signup
 async function handleSignup(event) {
     event.preventDefault();
-    
+
     const name = document.getElementById('signupName').value;
     const email = document.getElementById('signupEmail').value;
     const password = document.getElementById('signupPassword').value;
     const confirmPassword = document.getElementById('signupConfirmPassword').value;
-    
+
     if (password !== confirmPassword) {
         showMessage('Passwords do not match!', 'error');
         return;
     }
-    
+
     if (password.length < 6) {
         showMessage('Password should be at least 6 characters!', 'error');
         return;
     }
-    
+
     try {
         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
         await userCredential.user.updateProfile({ displayName: name });
-        
+
         // Create user document in Firestore
         await usersCollection.doc(userCredential.user.uid).set({
             name: name,
@@ -119,10 +128,10 @@ async function handleSignup(event) {
             progress: {},
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
-        
+
         closeModal('signupModal');
         showMessage('Account created successfully!', 'success');
-        
+
         // Redirect to dashboard after successful signup
         setTimeout(() => {
             window.location.href = 'dashboard.html';
@@ -137,7 +146,7 @@ async function logout() {
     try {
         await auth.signOut();
         showMessage('Logged out successfully!', 'success');
-        
+
         // Redirect to home page
         if (!window.location.pathname.includes('index.html')) {
             window.location.href = 'index.html';
@@ -175,24 +184,24 @@ async function loadDashboardData(userData) {
 function showMessage(message, type) {
     const messageContainer = document.getElementById('messageContainer');
     const messageDiv = document.createElement('div');
-    
+
     const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
     const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
-    
+
     messageDiv.className = `${bgColor} text-white px-6 py-4 rounded-lg shadow-lg mb-4 flex items-center transform transition-all duration-300 translate-x-full`;
     messageDiv.innerHTML = `
         <i class="fas ${icon} mr-3"></i>
         <span>${message}</span>
     `;
-    
+
     messageContainer.appendChild(messageDiv);
-    
+
     // Animate in
     setTimeout(() => {
         messageDiv.classList.remove('translate-x-full');
         messageDiv.classList.add('translate-x-0');
     }, 100);
-    
+
     // Remove after 5 seconds
     setTimeout(() => {
         messageDiv.classList.add('translate-x-full');
@@ -238,5 +247,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Check if user is on dashboard without being logged in
     if (window.location.pathname.includes('dashboard.html') && !isAuthenticated()) {
         window.location.href = 'index.html';
+    }
+
+    // Check URL hash for modal triggers
+    if (window.location.hash === '#signup') {
+        showSignupModal();
+    } else if (window.location.hash === '#login') {
+        showLoginModal();
     }
 });

@@ -43,13 +43,22 @@
                         <i class="fas fa-user-shield mr-1"></i>Admin
                     </a>
                 </div>
-                <div class="flex space-x-4">
+                <div id="auth-buttons" class="flex space-x-4">
                     <a href="login.html" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-300">
                         Login
                     </a>
                     <a href="register.html" class="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition duration-300">
                         Sign Up
                     </a>
+                </div>
+                <div id="user-info" class="hidden flex items-center space-x-4">
+                    <span class="text-white">Welcome, <span id="user-name" class="font-bold"></span></span>
+                    <a href="dashboard.html" class="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition duration-300">
+                        Dashboard
+                    </a>
+                    <button onclick="logout()" class="text-white hover:text-red-300 transition duration-300" title="Logout">
+                        <i class="fas fa-sign-out-alt text-xl"></i>
+                    </button>
                 </div>
                 <button class="md:hidden" onclick="toggleMobileMenu()">
                     <i class="fas fa-bars text-2xl"></i>

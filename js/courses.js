@@ -1,5 +1,5 @@
 // Courses page JavaScript
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Initialize AOS
     AOS.init({
         duration: 800,
@@ -8,23 +8,23 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Filter courses
-    window.filterCourses = function(level) {
+    window.filterCourses = function (level) {
         const courseCards = document.querySelectorAll('.course-card');
         const filterButtons = document.querySelectorAll('.filter-btn');
-        
+
         // Update active button style
         filterButtons.forEach(btn => {
             btn.classList.remove('bg-blue-600', 'text-white');
             btn.classList.add('bg-gray-200', 'text-gray-700');
         });
-        
+
         event.target.classList.remove('bg-gray-200', 'text-gray-700');
         event.target.classList.add('bg-blue-600', 'text-white');
-        
+
         // Filter courses
         courseCards.forEach(card => {
             const cardLevel = card.getAttribute('data-level');
-            
+
             if (level === 'all' || cardLevel === level) {
                 card.style.display = 'block';
                 setTimeout(() => {
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     // View course details
-    window.viewCourseDetails = function(courseId) {
+    window.viewCourseDetails = function (courseId) {
         const courseData = getCourseData(courseId);
         if (courseData) {
             displayCourseModal(courseData);
@@ -308,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 ]
             }
         };
-        
+
         return courses[courseId] || null;
     }
 
@@ -317,15 +317,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const modal = document.getElementById('courseModal');
         const modalTitle = document.getElementById('modalTitle');
         const modalContent = document.getElementById('modalContent');
-        
+
         modalTitle.textContent = courseData.title;
-        
+
         const levelColor = {
             'Beginner': 'bg-green-100 text-green-800',
             'Intermediate': 'bg-yellow-100 text-yellow-800',
             'Advanced': 'bg-red-100 text-red-800'
         };
-        
+
         modalContent.innerHTML = `
             <div class="space-y-6">
                 <div class="flex items-center space-x-4">
@@ -393,19 +393,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
         `;
-        
+
         modal.classList.remove('hidden');
     }
 
     // Close course modal
-    window.closeCourseModal = function() {
+    window.closeCourseModal = function () {
         document.getElementById('courseModal').classList.add('hidden');
     };
 
     // Enroll from modal
-    window.enrollInCourseFromModal = function(courseName) {
+    window.enrollInCourseFromModal = function (courseName) {
         closeCourseModal();
-        
+
         if (typeof isAuthenticated !== 'undefined' && isAuthenticated()) {
             enrollInCourse(courseName);
         } else {
@@ -420,7 +420,7 @@ document.addEventListener('DOMContentLoaded', function() {
         rootMargin: '0px 0px -50px 0px'
     };
 
-    const courseObserver = new IntersectionObserver(function(entries) {
+    const courseObserver = new IntersectionObserver(function (entries) {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.style.opacity = '1';
@@ -436,6 +436,55 @@ document.addEventListener('DOMContentLoaded', function() {
         courseObserver.observe(card);
     });
 });
+
+// Course enrollment function (Copied from main.js to ensure availability)
+async function enrollInCourse(courseName) {
+    const user = getCurrentUser();
+    if (!user) {
+        showMessage('Please login to enroll in courses', 'info');
+        return;
+    }
+
+    try {
+        // Add course to user's enrolled courses
+        await usersCollection.doc(user.uid).update({
+            enrolledCourses: firebase.firestore.FieldValue.arrayUnion(courseName)
+        });
+
+        // Initialize progress for this course
+        await progressCollection.doc(user.uid).set({
+            [courseName]: {
+                startedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                completedLessons: [],
+                totalLessons: getTotalLessons(courseName),
+                progressPercentage: 0
+            }
+        }, { merge: true });
+
+        showMessage(`Successfully enrolled in ${courseName}!`, 'success');
+
+        // Redirect to dashboard after a short delay
+        setTimeout(() => {
+            window.location.href = 'dashboard.html';
+        }, 1500);
+    } catch (error) {
+        console.error('Error enrolling in course:', error);
+        showMessage('Error enrolling in course. Please try again.', 'error');
+    }
+}
+
+// Get total lessons for a course
+function getTotalLessons(courseName) {
+    const courseLessons = {
+        'HTML & CSS Fundamentals': 24,
+        'JavaScript & DOM': 30,
+        'React Development': 36,
+        'Node.js & Express': 30,
+        'Vue.js Development': 24,
+        'Full Stack Mastery': 72
+    };
+    return courseLessons[courseName] || 20;
+}
 
 // Add custom styles for courses page
 const style = document.createElement('style');
